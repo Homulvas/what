@@ -1,5 +1,4 @@
 from scrapy.spider import BaseSpider
-from scrapy.selector import HtmlXPathSelector
 from scrapy.http import FormRequest
 from scrapy.http import Request
 
@@ -24,10 +23,8 @@ class WhatSpider(BaseSpider):
             return
         # We've successfully authenticated, let's have some fun!
         else:
-            return Request(url="http://www.what.cd", callback=self.parse_tastypage)
+            return Request(url="http://www.what.cd", callback=self.parse_what)
     
-    def parse_tastypage(self, response):
-        hxs = HtmlXPathSelector(response)
-        yum = hxs.select('//img')
-    
-        # etc.
+    def parse_what(self, response):
+        filename = response.url.split("/")[-2]  
+        open(filename, 'wb').write(response.body)
