@@ -1,6 +1,7 @@
 from scrapy.spider import BaseSpider
 from scrapy.http import FormRequest
 from scrapy.http import Request
+from scrapy.selector import HtmlXPathSelector
 
 class WhatSpider(BaseSpider):
     name = "what.cd"
@@ -26,5 +27,5 @@ class WhatSpider(BaseSpider):
             return Request(url="http://what.cd/artist.php?id=903", callback=self.parse_what)
     
     def parse_what(self, response):
-        filename = response.url.split("/")[-2]  
-        open(filename, 'wb').write(response.body)
+        x = HtmlXPathSelector(response)
+        print(x.select("//strong/a[@title='View Torrent']/text()").extract())
