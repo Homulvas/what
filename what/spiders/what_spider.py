@@ -28,4 +28,5 @@ class WhatSpider(BaseSpider):
     
     def parse_what(self, response):
         x = HtmlXPathSelector(response)
-        print(x.select("//tr[@class='releases_1 group discog']/td[@colspan=5]/strong/a[@title='View Torrent']/text()").extract())
+        album = x.select("//tr[@class='releases_1 group discog']/td[@colspan=5]/strong/a[@title='View Torrent']/text()").extract()
+        print(album)
