@@ -2,6 +2,7 @@ from scrapy.spider import BaseSpider
 from scrapy.http import FormRequest
 from scrapy.http import Request
 from scrapy.selector import HtmlXPathSelector
+from what.items import WhatItem
 
 class WhatSpider(BaseSpider):
     name = "what.cd"
@@ -28,5 +29,10 @@ class WhatSpider(BaseSpider):
     
     def parse_what(self, response):
         x = HtmlXPathSelector(response)
-        album = x.select("//tr[@class='releases_1 group discog']/td[@colspan=5]/strong/a[@title='View Torrent']/text()").extract()
-        print(album)
+        albums = x.select("//tr[@class='releases_1 group discog']/td[@colspan=5]/strong/a[@title='View Torrent']/text()").extract()
+        items = []
+        for album in albums:
+            item = WhatItem()
+            item['name'] = album
+            items.append(item)
+        return items
