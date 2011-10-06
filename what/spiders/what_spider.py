@@ -23,7 +23,7 @@ class WhatSpider(BaseSpider):
             return
         # We've successfully authenticated, let's have some fun!
         else:
-            return Request(url="http://www.what.cd", callback=self.parse_what)
+            return Request(url="http://what.cd/artist.php?id=903", callback=self.parse_what)
     
     def parse_what(self, response):
         filename = response.url.split("/")[-2]  
