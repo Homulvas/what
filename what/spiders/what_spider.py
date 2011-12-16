@@ -30,7 +30,13 @@ class WhatSpider(BaseSpider):
             return
         # We've successfully authenticated, let's have some fun!
         else:
-            return Request(url="http://what.cd/artist.php?id=903", callback=self.parse_what)
+            links = [
+                "http://what.cd/artist.php?id=903",
+                "http://what.cd/artist.php?id=273951"
+            ]
+            for link in links:
+                yield Request(url=link, callback=self.parse_what)
+            # return Request(url="http://what.cd/artist.php?id=903", callback=self.parse_what)
     
     def parse_what(self, response):
         x = HtmlXPathSelector(response)
