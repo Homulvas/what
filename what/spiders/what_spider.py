@@ -17,8 +17,8 @@ class WhatSpider(BaseSpider):
         config = ConfigParser.ConfigParser()
         fn = os.path.join(os.path.dirname(__file__), '..', '..', 'settings.ini')
         config.read(fn)
-        name = config.get('SectionOne', 'Username')
-        passw = config.get('SectionOne', 'Password')
+        name = config.get('Login', 'Username')
+        passw = config.get('Login', 'Password')
         return [FormRequest.from_response(response,
                     formdata={'username': name, 'password': passw},
                     callback=self.after_login)]
