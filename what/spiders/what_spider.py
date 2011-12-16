@@ -3,6 +3,8 @@ from scrapy.http import FormRequest
 from scrapy.http import Request
 from scrapy.selector import HtmlXPathSelector
 from what.items import WhatItem
+import ConfigParser
+import os
 
 class WhatSpider(BaseSpider):
     name = "what.cd"
@@ -12,16 +14,19 @@ class WhatSpider(BaseSpider):
     ]
 
     def parse(self, response):
-        name = raw_input("name> ")
-        passw = raw_input("pass> ")
+        config = ConfigParser.ConfigParser()
+        fn = os.path.join(os.path.dirname(__file__), '..', '..', 'settings.ini')
+        config.read(fn)
+        name = config.get('SectionOne', 'Username')
+        passw = config.get('SectionOne', 'Password')
         return [FormRequest.from_response(response,
                     formdata={'username': name, 'password': passw},
                     callback=self.after_login)]
 
     def after_login(self, response):
         # check login succeed before going on
-        if "login" in response.body:
-            print("Login failed")
+        if "Password" in response.body:
+            print("Login failed???!!!")
             return
         # We've successfully authenticated, let's have some fun!
         else:
