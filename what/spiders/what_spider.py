@@ -19,9 +19,7 @@ class WhatSpider(BaseSpider):
         config.read(fn)
         name = config.get('Login', 'Username')
         passw = config.get('Login', 'Password')
-        return [FormRequest.from_response(response,
-                    formdata={'username': name, 'password': passw},
-                    callback=self.after_login)]
+        return [FormRequest.from_response(response, formdata={'username': name, 'password': passw}, callback=self.after_login)]
 
     def after_login(self, response):
         # check login succeed before going on
@@ -30,15 +28,16 @@ class WhatSpider(BaseSpider):
             return
         # We've successfully authenticated, let's have some fun!
         else:
-            links = [
-                "http://what.cd/artist.php?id=903",
-                "http://what.cd/artist.php?id=273951"
-            ]
-            for link in links:
-                yield Request(url=link, callback=self.parse_what)
-            # return Request(url="http://what.cd/artist.php?id=903", callback=self.parse_what)
+            for dir in os.listdir('G:\\Music'):
+                yield Request('http://what.cd/artist.php?artistname=' + dir, callback=self.parse_what)
+            #return Request(url="http://what.cd/torrents.php?action=advanced&", callback=self.search)
+            #for link in links:
+            #    yield Request(url=link, callback=self.parse_what)
+
     
     def parse_what(self, response):
+        print("SDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
+        print response.url
         x = HtmlXPathSelector(response)
         albums = x.select("//tr[@class='releases_1 group discog']/td[@colspan=5]/strong/a[@title='View Torrent']/text()").extract()
         items = []
