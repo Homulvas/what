@@ -5,11 +5,6 @@ from scrapy.selector import HtmlXPathSelector
 from what.items import WhatItem
 import ConfigParser
 import os
-import sqlite3
-
-conn = sqlite3.connect('db')
-c = conn.cursor()
-c.execute('''create table if not exists albums (artist text, album text, year integer)''')
 
 class WhatSpider(BaseSpider):
     name = "what.cd"
@@ -41,15 +36,19 @@ class WhatSpider(BaseSpider):
                 yield Request('http://what.cd/artist.php?artistname=' + dir, callback=self.parse_what)
     
     def parse_what(self, response):
-        global conn
-        global c
+        #global conn
+        #global c
         x = HtmlXPathSelector(response)
+        group = x.select("//div[@class='thin']/h2/text()").extract()
         albums = x.select("//tr[@class='releases_1 group discog']/td[@colspan=5]/strong/a[@title='View Torrent']/text()").extract()
+        years = x.select("//tr[@class='releases_1 group discog']/td[@colspan=5]/strong/text()").extract()
         items = []
-        for album in albums:
+        for album, year in zip(albums, years):
             item = WhatItem()
-            item['name'] = album
-            c.execute('''insert into albums values ('test', 'test', 2000)''')
+            item['album'] = album
+            item['group'] = group
+            item['year'] = year
+            #c.execute('''insert into albums values (?, ?, ?)''', (group[0], album, year))
             items.append(item)
-        conn.commit()
+        #conn.commit()
         return items

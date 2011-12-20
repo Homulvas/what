@@ -13,4 +13,5 @@ SPIDER_MODULES = ['what.spiders']
 NEWSPIDER_MODULE = 'what.spiders'
 DEFAULT_ITEM_CLASS = 'what.items.WhatItem'
 USER_AGENT = '%s/%s' % (BOT_NAME, BOT_VERSION)
+ITEM_PIPELINES = ['what.pipelines.WhatPipeline']
 
