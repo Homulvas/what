@@ -2,3 +2,4 @@ what.cd
 *.pyc
 .scrapy
 settings.ini
+db

@@ -5,6 +5,7 @@ from scrapy.selector import HtmlXPathSelector
 from what.items import WhatItem
 import ConfigParser
 import os
+import string
 
 class WhatSpider(BaseSpider):
     name = "what.cd"
@@ -36,8 +37,6 @@ class WhatSpider(BaseSpider):
                 yield Request('http://what.cd/artist.php?artistname=' + dir, callback=self.parse_what)
     
     def parse_what(self, response):
-        #global conn
-        #global c
         x = HtmlXPathSelector(response)
         group = x.select("//div[@class='thin']/h2/text()").extract()
         albums = x.select("//tr[@class='releases_1 group discog']/td[@colspan=5]/strong/a[@title='View Torrent']/text()").extract()
@@ -46,9 +45,7 @@ class WhatSpider(BaseSpider):
         for album, year in zip(albums, years):
             item = WhatItem()
             item['album'] = album
-            item['group'] = group
-            item['year'] = year
-            #c.execute('''insert into albums values (?, ?, ?)''', (group[0], album, year))
+            item['group'] = group[0]
+            item['year'] = string.split(year)[0]
             items.append(item)
-        #conn.commit()
         return items
