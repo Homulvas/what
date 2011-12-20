@@ -5,32 +5,24 @@
 
 import sqlite3
 
-new = []
-
 class WhatPipeline(object):
 
-    connection = 0
-    cursor = 0
-
-    def __init__(self, download_func=None):
-        global connection
-        global cursor
-        connection = sqlite3.connect('db')
-        cursor = connection.cursor()
-        cursor.execute('''create table if not exists albums (artist text, album text, year text)''')
+    def __init__(self):
+        self.connection = sqlite3.connect('db')
+        self.cursor = self.connection.cursor()
+        self.cursor.execute('''create table if not exists albums (artist text, album text, year text)''')
+        self.new = []
 
     def process_item(self, item, spider):
-        global cursor
-        cursor.execute('''select rowid from albums where artist = ? and album = ? and year = ?''', (item['group'], item['album'], item['year']))
-        data=cursor.fetchall()
+        self.cursor.execute('''select rowid from albums where artist = ? and album = ? and year = ?''', (item['group'], item['album'], item['year']))
+        data = self.cursor.fetchall()
         if len(data)==0:
-            cursor.execute('''insert into albums values (?, ?, ?)''', (item['group'], item['album'], item['year']))
+            self.cursor.execute('''insert into albums values (?, ?, ?)''', (item['group'], item['album'], item['year']))
             new.append(item)
         return item
 
     def close_spider(self, spider):
-        global connection
-        connection.commit()
-        for item in new:
+        self.connection.commit()
+        for item in self.new:
             print item
-        cursor.close()
+        self.cursor.close()
