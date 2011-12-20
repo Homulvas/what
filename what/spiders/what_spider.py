@@ -5,6 +5,11 @@ from scrapy.selector import HtmlXPathSelector
 from what.items import WhatItem
 import ConfigParser
 import os
+import sqlite3
+
+conn = sqlite3.connect('db')
+c = conn.cursor()
+c.execute('''create table if not exists albums (artist text, album text, year integer)''')
 
 class WhatSpider(BaseSpider):
     name = "what.cd"
@@ -12,6 +17,7 @@ class WhatSpider(BaseSpider):
     start_urls = [
         "http://www.what.cd/login.php"
     ]
+
 
     def parse(self, response):
         config = ConfigParser.ConfigParser()
@@ -28,21 +34,22 @@ class WhatSpider(BaseSpider):
             return
         # We've successfully authenticated, let's have some fun!
         else:
-            for dir in os.listdir('G:\\Music'):
+            config = ConfigParser.ConfigParser()
+            fn = os.path.join(os.path.dirname(__file__), '..', '..', 'settings.ini')
+            config.read(fn)
+            for dir in os.listdir(config.get('Path', 'Path')):
                 yield Request('http://what.cd/artist.php?artistname=' + dir, callback=self.parse_what)
-            #return Request(url="http://what.cd/torrents.php?action=advanced&", callback=self.search)
-            #for link in links:
-            #    yield Request(url=link, callback=self.parse_what)
-
     
     def parse_what(self, response):
-        print("SDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
-        print response.url
+        global conn
+        global c
         x = HtmlXPathSelector(response)
         albums = x.select("//tr[@class='releases_1 group discog']/td[@colspan=5]/strong/a[@title='View Torrent']/text()").extract()
         items = []
         for album in albums:
             item = WhatItem()
             item['name'] = album
+            c.execute('''insert into albums values ('test', 'test', 2000)''')
             items.append(item)
+        conn.commit()
         return items
