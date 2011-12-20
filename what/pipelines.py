@@ -18,7 +18,7 @@ class WhatPipeline(object):
         data = self.cursor.fetchall()
         if len(data)==0:
             self.cursor.execute('''insert into albums values (?, ?, ?)''', (item['group'], item['album'], item['year']))
-            new.append(item)
+            self.new.append(item)
         return item
 
     def close_spider(self, spider):
