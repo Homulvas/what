@@ -7,6 +7,7 @@ import ConfigParser
 import os
 import string
 
+
 class WhatSpider(BaseSpider):
     name = "what.cd"
     allowed_domains = ["what.cd"]
