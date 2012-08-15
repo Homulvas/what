@@ -4,4 +4,4 @@ Initially it will create a database with all the albums your artists have realea
 After then it will show only albums that appeared on what.cd tracker after your last run of the script.
 
 You need to setup your what.cd credentials and path to your library(it only reads the top layer folder names) to use the scrept.
-After this run it from console typing "scrapy crawl what". You may need to install scrapy first.
+After this run it from console typing "scrapy crawl what.cd". You may need to install scrapy first.
